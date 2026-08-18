@@ -1,0 +1,55 @@
+{
+  "transactions": [
+    {
+      "type": "expense",
+      "amount": 100.0,
+      "category": "utilities",
+      "description": "HDMI cable",
+      "date": "2026-08-18",
+      "id": "1c0d7b56-906a-4f80-b75d-0f4751527aac"
+    },
+    {
+      "type": "income",
+      "amount": 500.0,
+      "category": "gift",
+      "description": "Birthday",
+      "date": "2026-08-18",
+      "id": "4d06a508-9415-49f9-9423-1094c0f1e842"
+    },
+    {
+      "type": "expense",
+      "amount": 40.0,
+      "category": "food",
+      "description": "Eba",
+      "date": "2026-08-18",
+      "id": "17f76d18-18cc-4afb-93eb-973f3eae8b46"
+    },
+    {
+      "type": "income",
+      "amount": 1000.0,
+      "category": "freelance",
+      "description": "Amne",
+      "date": "2026-08-18",
+      "id": "a0ca372f-e9d1-4f9b-afe0-fdb37326a5c7"
+    },
+    {
+      "type": "expense",
+      "amount": 30.0,
+      "category": "entertainment",
+      "description": "Cinema Tickets",
+      "date": "2026-08-18",
+      "id": "c623acff-1727-46ca-b2ad-c8efbb6efd5c"
+    },
+    {
+      "type": "expense",
+      "amount": 50.0,
+      "category": "food",
+      "description": "Groceries",
+      "date": "2026-08-18",
+      "id": "2f9b7708-0667-4b1e-b2bf-af6c8b5d24b4"
+    }
+  ],
+  "budgets": {
+    "2026-08": 300.0
+  }
+}

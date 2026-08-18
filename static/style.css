@@ -1,0 +1,518 @@
+/* ── RESET & BASE ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  color-scheme: light;
+  --bg:        #f9f9f7;
+  --surface:   #ffffff;
+  --card:      #fcfcfb;
+  --border:    #e1e0d9;
+  --text:      #0b0b0b;
+  --muted:     #6d6c67;
+  --primary:   #2a78d6;
+  --primary-h: #1c5cab;
+  --income:    #098209;
+  --expense:   #d03b3b;
+  --r:         12px;
+  --r-sm:      8px;
+  --shadow:    0 4px 24px rgba(11,11,11,.08);
+
+  --series-1: #2a78d6; /* food */
+  --series-2: #eb6834; /* rent */
+  --series-3: #1baf7a; /* transport */
+  --series-4: #eda100; /* utilities */
+  --series-5: #e87ba4; /* entertainment */
+  --series-6: #008300; /* settlement */
+  --series-7: #4a3aa7; /* shopping */
+  --series-8: #e34948; /* other */
+
+  /* Income categories get their own palette so an income tag never
+     renders in the exact same hue as an unrelated expense category
+     (e.g. Salary vs. Food both landing on --series-1 blue). */
+  --inc-series-1: #257e64; /* salary */
+  --inc-series-2: #6468c4; /* freelance */
+  --inc-series-3: #936c1f; /* investment */
+  --inc-series-4: #b9468b; /* gift */
+  --inc-series-5: #757070; /* other */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg:        #0d0d0d;
+    --surface:   #14141f;
+    --card:      #1a1a19;
+    --border:    #2c2c2a;
+    --text:      #ffffff;
+    --muted:     #c3c2b7;
+    --primary:   #3987e5;
+    --primary-h: #5aa0ef;
+    --income:    #0ca30c;
+    --expense:   #e66767;
+    --shadow:    0 4px 24px rgba(0,0,0,.45);
+
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-6: #008300;
+    --series-7: #9085e9;
+    --series-8: #e66767;
+
+    --inc-series-1: #2c9676; /* salary */
+    --inc-series-2: #7a7dcd; /* freelance */
+    --inc-series-3: #ad7e25; /* investment */
+    --inc-series-4: #c4649e; /* gift */
+    --inc-series-5: #878282; /* other */
+  }
+}
+
+html { font-size: 15px; }
+html, body { overflow-x: hidden; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: .875rem 2rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+
+.content {
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.75rem 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── SUMMARY CARDS ──────────────────────────────────────── */
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.summary-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.1rem 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.scard-label {
+  font-size: .78rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: .35rem;
+}
+
+.scard-value {
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+
+.income-card .scard-value  { color: var(--income); }
+.expense-card .scard-value { color: var(--expense); }
+.scard-value.negative      { color: var(--expense); }
+
+/* ── CARDS & FORMS ──────────────────────────────────────── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.card-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem .75rem;
+  margin-bottom: 1rem;
+}
+.card-header-row .card-title { margin-bottom: 0; min-width: 0; }
+
+.form-group { margin-bottom: 1rem; }
+.form-group label {
+  display: block;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: .375rem;
+}
+
+input[type="text"], input[type="number"], input[type="date"], select {
+  width: 100%;
+  padding: .55rem .7rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-size: .9rem;
+  font-family: inherit;
+}
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.toggle-group { display: flex; gap: .5rem; }
+.toggle-btn {
+  flex: 1;
+  padding: .55rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  border-radius: var(--r-sm);
+  font-weight: 600;
+  font-size: .85rem;
+  cursor: pointer;
+}
+.toggle-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  padding: .6rem 1rem;
+  border: none;
+  border-radius: var(--r-sm);
+  font-weight: 600;
+  font-size: .88rem;
+  cursor: pointer;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-h); }
+.btn:disabled { opacity: .6; cursor: not-allowed; }
+.w-full { width: 100%; }
+
+.filter-select { width: auto; padding: .4rem .6rem; font-size: .82rem; }
+
+.btn-sm { padding: .4rem .8rem; font-size: .8rem; }
+
+/* ── MONTHLY BUDGET ─────────────────────────────────────── */
+.budget-limit-form {
+  display: flex;
+  gap: .5rem;
+  min-width: 0;
+}
+.budget-limit-form input {
+  width: 140px;
+  min-width: 0;
+  flex: 1 1 140px;
+}
+.budget-limit-form .btn { flex-shrink: 0; }
+
+.budget-progress-track {
+  background: var(--border);
+  border-radius: 999px;
+  height: 16px;
+  overflow: hidden;
+}
+
+.budget-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--primary);
+  transition: width .25s ease;
+}
+.budget-progress-fill.over { background: var(--expense); }
+
+.budget-progress-text {
+  margin-top: .5rem;
+  font-size: .84rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.budget-progress-text.over { color: var(--expense); }
+
+/* ── TRANSACTION LIST ───────────────────────────────────── */
+.scroll-list {
+  max-height: 360px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.scroll-list::-webkit-scrollbar { width: 8px; }
+.scroll-list::-webkit-scrollbar-track { background: transparent; }
+.scroll-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+.scroll-list::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+.tx-item {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  padding: .6rem .5rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+}
+
+.tx-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.tx-dot.income  { background: var(--income); }
+.tx-dot.expense { background: var(--expense); }
+
+.tx-info { flex: 1; min-width: 0; }
+
+.tx-desc-row {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  min-width: 0;
+}
+
+.tx-desc {
+  font-size: .9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cat-tag {
+  flex-shrink: 0;
+  font-size: .68rem;
+  font-weight: 700;
+  padding: .1rem .5rem;
+  border-radius: 999px;
+  text-transform: capitalize;
+  letter-spacing: .01em;
+  border: 1px solid transparent;
+}
+/* Expense tags are solid fills; income tags are tinted/outlined so the
+   two never look identical even when a category happens to reuse a
+   similar underlying hue. */
+.cat-tag-expense { background: var(--tag-color); color: #fff; }
+.cat-tag-income  {
+  background: color-mix(in srgb, var(--tag-color) 16%, transparent);
+  border-color: var(--tag-color);
+  color: var(--tag-color);
+}
+
+.tx-meta { font-size: .76rem; color: var(--muted); margin-top: .15rem; }
+
+.tx-amount { font-weight: 700; font-size: .88rem; flex-shrink: 0; }
+.tx-amount.income  { color: var(--income); }
+.tx-amount.expense { color: var(--expense); }
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: .55rem;
+  margin: -.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.delete-btn:hover { color: var(--expense); background: color-mix(in srgb, var(--expense) 12%, transparent); }
+.delete-btn:focus-visible { outline: 2px solid var(--expense); outline-offset: 1px; }
+
+.empty-msg {
+  color: var(--muted);
+  font-size: .85rem;
+  text-align: center;
+  padding: 2rem 0;
+}
+.empty-msg-error { color: var(--expense); font-weight: 600; }
+
+/* ── CATEGORY BAR CHART ─────────────────────────────────── */
+.bar-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 110px;
+  align-items: center;
+  gap: .75rem;
+  padding: .3rem 0;
+}
+
+.bar-cat-label {
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+.bar-track {
+  display: block;
+  background: var(--border);
+  border-radius: 4px;
+  height: 14px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  min-width: 4px;
+}
+
+.bar-value {
+  font-size: .82rem;
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.bar-row:focus-visible,
+.bar-row:hover .bar-fill {
+  filter: brightness(1.12);
+}
+.bar-row { outline: none; border-radius: var(--r-sm); }
+.bar-row:focus-visible { box-shadow: 0 0 0 2px var(--primary); }
+
+/* ── CATEGORY GROUPS ────────────────────────────────────── */
+.category-group { margin-bottom: 1.1rem; }
+.category-group:last-child { margin-bottom: 0; }
+
+.category-group-header {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding-bottom: .4rem;
+  margin-bottom: .4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.category-group-label {
+  font-weight: 700;
+  font-size: .92rem;
+}
+
+.category-group-count {
+  font-size: .74rem;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: .05rem .5rem;
+}
+
+.category-group-total {
+  margin-left: auto;
+  font-weight: 700;
+  font-size: .88rem;
+}
+.category-group-total.income  { color: var(--income); }
+.category-group-total.expense { color: var(--expense); }
+
+.category-group-list {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+}
+
+.category-tx-row {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: .75rem;
+  align-items: center;
+  padding: .35rem .5rem;
+  border-radius: var(--r-sm);
+}
+.category-tx-row:hover { background: var(--surface); }
+
+.category-tx-date {
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+.category-tx-desc {
+  font-size: .85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-tx-amount { font-weight: 600; font-size: .85rem; }
+.category-tx-amount.income  { color: var(--income); }
+.category-tx-amount.expense { color: var(--expense); }
+
+/* ── TOAST ──────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--text);
+  color: var(--bg);
+  padding: .6rem 1.1rem;
+  border-radius: var(--r-sm);
+  font-size: .85rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, transform .2s;
+  z-index: 999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: var(--expense); color: #fff; }
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .two-col, .summary-row { grid-template-columns: 1fr; }
+  .bar-row { grid-template-columns: 90px 1fr 90px; }
+  .category-tx-row { grid-template-columns: 80px 1fr auto; }
+}
+
+@media (max-width: 560px) {
+  .header { padding: .875rem 1.25rem; }
+  .content { padding: 1.25rem 1.25rem 2.5rem; gap: 1.25rem; }
+  .card { padding: 1rem; }
+  .budget-limit-form { flex: 1 1 100%; }
+  .budget-limit-form input { flex: 1 1 auto; width: auto; }
+}

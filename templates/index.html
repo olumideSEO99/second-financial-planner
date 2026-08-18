@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Planner</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="header">
+    <div class="logo">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="6" width="20" height="13" rx="2"/>
+        <path d="M2 10h20"/>
+        <circle cx="16" cy="14.5" r="1.5" fill="url(#g)" stroke="none"/>
+        <defs><linearGradient id="g" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#2a78d6"/><stop offset="1" stop-color="#1baf7a"/></linearGradient></defs>
+      </svg>
+      <span>Budget Planner</span>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- SUMMARY -->
+    <div class="summary-row">
+      <div class="summary-card income-card">
+        <div class="scard-label">Total Income</div>
+        <div class="scard-value" id="total-income">$0.00</div>
+      </div>
+      <div class="summary-card expense-card">
+        <div class="scard-label">Total Expenses</div>
+        <div class="scard-value" id="total-expenses">$0.00</div>
+      </div>
+      <div class="summary-card balance-card">
+        <div class="scard-label">Balance</div>
+        <div class="scard-value" id="balance">$0.00</div>
+      </div>
+    </div>
+
+    <!-- MONTHLY BUDGET -->
+    <div class="card">
+      <div class="card-header-row">
+        <h2 class="card-title" id="budget-month-title">Monthly Budget</h2>
+        <form id="budget-limit-form" class="budget-limit-form">
+          <input type="number" id="budget-limit-input" step="0.01" min="0" placeholder="Set budget ($)">
+          <button type="submit" class="btn btn-primary btn-sm">Save</button>
+        </form>
+      </div>
+      <div id="budget-progress"></div>
+    </div>
+
+    <!-- FORM + LIST -->
+    <div class="two-col">
+      <div class="card">
+        <h2 class="card-title">Add Transaction</h2>
+        <form id="budget-form">
+          <div class="form-group">
+            <label>Type</label>
+            <div class="toggle-group">
+              <button type="button" class="toggle-btn active" data-val="income">Income</button>
+              <button type="button" class="toggle-btn" data-val="expense">Expense</button>
+            </div>
+            <input type="hidden" id="tx-type" value="income">
+          </div>
+          <div class="form-group">
+            <label for="tx-amount">Amount ($)</label>
+            <input type="number" id="tx-amount" step="0.01" min="0" placeholder="0.00" required>
+          </div>
+          <div class="form-group">
+            <label for="tx-category">Category</label>
+            <select id="tx-category"></select>
+          </div>
+          <div class="form-group">
+            <label for="tx-desc">Description</label>
+            <input type="text" id="tx-desc" placeholder="What was this for?">
+          </div>
+          <div class="form-group">
+            <label for="tx-date">Date</label>
+            <input type="date" id="tx-date">
+          </div>
+          <button type="submit" class="btn btn-primary w-full">Add Transaction</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <h2 class="card-title">Transactions</h2>
+          <select id="budget-filter" class="filter-select">
+            <option value="all">All</option>
+            <option value="income">Income</option>
+            <option value="expense">Expenses</option>
+          </select>
+        </div>
+        <div id="transactions-list" class="scroll-list"></div>
+      </div>
+    </div>
+
+    <!-- CHART -->
+    <div class="card chart-card">
+      <h2 class="card-title">Spending by Category</h2>
+      <div id="chart-container"></div>
+    </div>
+
+    <!-- ALL TRANSACTIONS, GROUPED BY CATEGORY -->
+    <div class="card">
+      <h2 class="card-title">All Transactions by Category</h2>
+      <div id="category-groups"></div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
